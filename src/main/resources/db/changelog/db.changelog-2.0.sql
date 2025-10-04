@@ -1,3 +1,0 @@
---liquibase formatted sql
---changeset dlevazhinskiy:1
--- ALTER TABLE card_holder RENAME TO Person
