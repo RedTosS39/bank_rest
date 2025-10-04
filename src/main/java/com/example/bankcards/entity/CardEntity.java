@@ -11,7 +11,7 @@ public class CardEntity {
     @Id
     @Column(name = "bank_card_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int bankCardId;
+    private Long bankCardId;
 
     @Column(name = "expired_at")
     private LocalDate expiredDate;
