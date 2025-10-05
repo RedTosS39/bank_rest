@@ -1,6 +1,8 @@
 package com.example.bankcards.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -13,10 +15,14 @@ public class CardEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bankCardId;
 
+    @Column(name = "card_number", nullable = false, length = 16)
+    @JdbcTypeCode(SqlTypes.CHAR)
+    private String cardNumber;
+
     @Column(name = "expired_at")
     private LocalDate expiredDate;
 
-    @Column(name = "balance")
+    @Column(name = "balance", precision = 12, scale = 5)
     private BigDecimal balance;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
