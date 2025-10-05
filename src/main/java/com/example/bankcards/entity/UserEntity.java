@@ -3,7 +3,6 @@ package com.example.bankcards.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
@@ -11,7 +10,6 @@ import java.util.List;
 @Entity
 @Table(name = "Users")
 
-@RequiredArgsConstructor
 @NoArgsConstructor
 public class UserEntity {
     @Id
@@ -20,7 +18,7 @@ public class UserEntity {
     private Long cardHolderId;
 
     @Column(name = "card_owner")
-    private String cardOwner;
+    private String username;
 
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
@@ -28,4 +26,7 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "userEntity")
     private List<CardEntity> cards;
+
+    @Column(name = "user_password")
+    private String password;
 }
