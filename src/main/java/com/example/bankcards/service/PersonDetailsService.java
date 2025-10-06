@@ -24,7 +24,6 @@ public class PersonDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity user = peopleRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
-
         log.info("user data:{}, {}", user.getUsername(), user.getPassword());
         return new PersonDetails(user);
     }
