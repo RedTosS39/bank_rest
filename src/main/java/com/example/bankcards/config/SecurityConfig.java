@@ -26,4 +26,6 @@ public class SecurityConfig {
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    //TODO добавить возможность зарегистрироваться минуя страницу логина.
 }
