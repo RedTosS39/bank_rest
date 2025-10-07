@@ -24,20 +24,16 @@ public class CardController {
     }
 
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{id}/block")
     public ResponseEntity<HttpStatus> blockCard(@PathVariable("id") Long cardId) {
         //TODO
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping()
-    public ResponseEntity<HttpStatus> transactionBetweenCards(@RequestParam("cardIdFrom") Long cardIdFrom,
-                                                              @RequestParam("cardIdTo") Long cardIdTo) {
-        //TODO
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
+
+    //Только пользователь может смотреть
     @GetMapping("/{id}/balance")
     public ResponseEntity<HttpStatus> showBalance(@PathVariable("id") Long cardId) {
         //TODO

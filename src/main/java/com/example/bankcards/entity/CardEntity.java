@@ -1,6 +1,7 @@
 package com.example.bankcards.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -9,6 +10,11 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "bank_card")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class CardEntity {
     @Id
     @Column(name = "bank_card_id")
@@ -29,4 +35,7 @@ public class CardEntity {
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private UserEntity userEntity;
 
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private Status status;
 }
