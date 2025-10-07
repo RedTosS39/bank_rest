@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ShowErrorMessage {
 
-    default String showErrorMessage(BindingResult bindingResult) {
+    static String showErrorMessage(BindingResult bindingResult) {
 
         StringBuilder errorsMsg = new StringBuilder();
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();

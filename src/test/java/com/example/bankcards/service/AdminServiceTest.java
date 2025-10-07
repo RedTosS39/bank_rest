@@ -13,21 +13,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.Collections;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-class PeopleServiceTest {
+class AdminServiceTest {
 
     private ModelMapper modelMapper;
     @MockitoBean
     private PeopleRepository peopleRepository;
 
     @Autowired
-    private PeopleService peopleService;
+    private AdminService adminService;
 
     @Test
     void PeopleService_load_User_By_Username_If_Not_Exist() {

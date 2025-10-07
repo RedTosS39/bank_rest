@@ -23,8 +23,20 @@ public class PersonDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity user = peopleRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
-        log.info("user data:{}, {}", user.getUsername(), user.getPassword());
-        return new PersonDetails(user);
+        UserEntity user = peopleRepository.findByUsername(username)
+                .orElseThrow(() -> {
+                    log.error("User not found: {}", username);
+                    return new UsernameNotFoundException(username);
+                });
+
+        log.info("User found: username={}, password={}, role={}",
+                user.getUsername(),
+                user.getPassword(),
+                user.getRole());
+
+        PersonDetails personDetails = new PersonDetails(user);
+        log.info("Authorities: {}", personDetails.getAuthorities());
+
+        return personDetails;
     }
 }
