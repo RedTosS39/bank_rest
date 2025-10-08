@@ -22,7 +22,6 @@ public class SecurityConfig {
     private static final String LOGIN_PAGE = "/login";
     private static final String LOGOUT_PAGE = "/logout";
     private static final String ADMIN_PAGE = "/admin";
-    private static final String CARDS_PAGE = "/cards";
     private static final String TRANSFER_PAGE = "/transfer";
 
     private final PersonDetailsService personDetails;
@@ -42,7 +41,7 @@ public class SecurityConfig {
                                         API_DOCS,
                                         "/").permitAll()
                                 .requestMatchers(HttpMethod.POST, REGISTRATION_PAGE).permitAll()
-                                .requestMatchers(ADMIN_PAGE + "/**", CARDS_PAGE + "/{id}/block").hasRole("ADMIN")
+                                .requestMatchers(ADMIN_PAGE + "/**").hasRole("ADMIN")
                                 .requestMatchers(TRANSFER_PAGE + "/**").hasRole("USER")
                                 .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin

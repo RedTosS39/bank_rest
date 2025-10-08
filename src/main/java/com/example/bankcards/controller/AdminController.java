@@ -2,9 +2,11 @@ package com.example.bankcards.controller;
 
 import com.example.bankcards.dto.CardDto;
 import com.example.bankcards.dto.UserDto;
+import com.example.bankcards.entity.Status;
 import com.example.bankcards.entity.UserEntity;
 import com.example.bankcards.security.PersonDetails;
 import com.example.bankcards.service.AdminService;
+import com.example.bankcards.service.CardsService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,15 +27,20 @@ import java.util.stream.Collectors;
 @RequestMapping("/admin")
 public class AdminController {
 
-    private final AdminService adminService;
+    ///  - Создает V, блокирует V, активирует V, удаляет карты V
+    ///  - Управляет пользователями ?
+    ///  - Видит все карты V
 
+    private final AdminService adminService;
     private final ModelMapper modelMapper;
+    private final CardsService cardsService;
 
 
     @Autowired
-    public AdminController(AdminService adminService, ModelMapper modelMapper) {
+    public AdminController(AdminService adminService, ModelMapper modelMapper, CardsService cardsService) {
         this.adminService = adminService;
         this.modelMapper = modelMapper;
+        this.cardsService = cardsService;
     }
 
     @GetMapping("/info")
@@ -70,8 +77,33 @@ public class AdminController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/cards")
+    public ResponseEntity<HttpStatus> showCards() {
+        cardsService.showCards();
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
 
-    @GetMapping("/{id}")
+    @PostMapping("/create_card")
+    public ResponseEntity<HttpStatus> createCard(@RequestBody CardDto cardDto) {
+        cardsService.createCard(cardDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PatchMapping("/{id}/block")
+    public ResponseEntity<HttpStatus> changeStatus(@PathVariable("id") Long cardId,
+                                                   @RequestParam("status") Status status) {
+        cardsService.changeStatus(cardId, status);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("{id}/cards")
+    public ResponseEntity<HttpStatus> deleteCard(@PathVariable("id") Long cardId) {
+        cardsService.deleteCard(cardId);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(HttpStatus.OK);
+    }
+
+
+    @GetMapping("/{id}/user")
     public ResponseEntity<HttpStatus> showUser(@PathVariable Long id) {
         adminService.findUserById(id);
         return new ResponseEntity<>(HttpStatus.OK);

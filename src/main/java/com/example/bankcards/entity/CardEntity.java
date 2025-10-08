@@ -19,7 +19,7 @@ public class CardEntity {
     @Id
     @Column(name = "bank_card_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long bankCardId;
+    private Long id;
 
     @Column(name = "card_number", nullable = false, length = 16)
     @JdbcTypeCode(SqlTypes.CHAR)
@@ -38,4 +38,8 @@ public class CardEntity {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    @Column(name = "version")
+    @Version
+    private long version;
 }
