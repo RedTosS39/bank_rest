@@ -2,6 +2,7 @@ package com.example.bankcards.service;
 
 import com.example.bankcards.entity.CardEntity;
 import com.example.bankcards.entity.Status;
+import com.example.bankcards.exception.CardAlreadyExistException;
 import com.example.bankcards.exception.CardBalanceException;
 import com.example.bankcards.exception.CardExpiredException;
 import com.example.bankcards.exception.CardNotFoundException;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Service
 public class TransferMoneyService {
@@ -24,20 +26,27 @@ public class TransferMoneyService {
 
     @Transactional
     public void transferMoney(Long from, Long to, BigDecimal amount) {
-        CardEntity cardFrom = cardRepository.findById(from).orElseThrow(() -> new CardNotFoundException("Card not found"));
-        CardEntity cardTo = cardRepository.findById(to).orElseThrow(() -> new CardNotFoundException("Card not found"));
+        CardEntity cardFrom = getCard(from);
+        CardEntity cardTo = getCard(to);
+
+        if (cardFrom.getExpiredDate().isBefore(LocalDate.now())) {
+            throw new CardExpiredException("Card is expired");
+        }
+
         if (!(cardFrom.getBalance().compareTo(amount) >= 0)) {
             throw new CardBalanceException("Not enough balance");
         }
 
-        if (cardFrom.getStatus().equals(Status.BLOCKED)
-            || cardFrom.getStatus().equals(Status.EXPIRED)
-            || cardTo.getStatus().equals(Status.BLOCKED)
-            || cardTo.getStatus().equals(Status.EXPIRED)) {
+        if (!cardFrom.getStatus().equals(Status.ACTIVE)
+            || !cardTo.getStatus().equals(Status.ACTIVE)) {
             throw new CardExpiredException("Card is expired or blocked");
         }
 
         cardFrom.setBalance(cardFrom.getBalance().subtract(amount));
         cardTo.setBalance(cardTo.getBalance().add(amount));
+    }
+
+    private CardEntity getCard(Long from) {
+        return cardRepository.findByIdWithLock(from).orElseThrow(() -> new CardNotFoundException("Card not found"));
     }
 }
