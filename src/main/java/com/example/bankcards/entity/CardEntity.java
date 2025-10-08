@@ -41,5 +41,5 @@ public class CardEntity {
 
     @Column(name = "version")
     @Version
-    private long version;
+    private int version;
 }
