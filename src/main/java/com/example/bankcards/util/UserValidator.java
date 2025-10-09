@@ -2,7 +2,6 @@ package com.example.bankcards.util;
 
 import com.example.bankcards.dto.UserDto;
 import com.example.bankcards.exception.UserAlreadyExistException;
-import com.example.bankcards.exception.UserNotFoundException;
 import com.example.bankcards.service.AdminService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
