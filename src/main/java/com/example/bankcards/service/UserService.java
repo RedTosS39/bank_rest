@@ -16,13 +16,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
-    /**
-     * - Просматривает свои карты V (поиск + пагинация) V
-     * - Запрашивает блокировку карты
-     * - Делает переводы между своими картами V
-     * - Смотрит баланс V
-     */
-
     private final CardRepository cardRepository;
     private final PeopleRepository peopleRepository;
     private final ModelMapper modelMapper;
@@ -34,11 +27,16 @@ public class UserService {
         this.modelMapper = modelMapper;
     }
 
-    public Page<CardDto> showUserCards(Long userId, Pageable pages, String search) {
+    public Page<CardDto> showUserCards(Long userId, Pageable pages, String searchingCard) {
         peopleRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
-        Page<CardEntity> entityPage = cardRepository.findByUserEntityIdAndCardNumberContaining(userId, search, pages);
-        Page<CardDto> dtoPage = entityPage.map(card -> modelMapper.map(card, CardDto.class));
-        return dtoPage;
+        Page<CardEntity> entityPage;
+
+        if (searchingCard == null || searchingCard.isEmpty()) {
+            entityPage = cardRepository.findByUserEntityId(userId, pages);
+        } else {
+            entityPage = cardRepository.findByUserEntityIdAndCardNumberContaining(userId, searchingCard, pages);
+        }
+        return entityPage.map(card -> modelMapper.map(card, CardDto.class));
     }
 
     public CardDto showBalance(Long userId, Long cardId) {

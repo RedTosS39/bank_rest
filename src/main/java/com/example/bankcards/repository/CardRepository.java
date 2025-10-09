@@ -18,6 +18,8 @@ public interface CardRepository extends JpaRepository<CardEntity, Long> {
 
     Optional<CardEntity> findByCardNumber(String cardNumber);
 
+    Page<CardEntity> findByUserEntityId(Long userId, Pageable pageable);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE) // SELECT FOR UPDATE
     @Query("SELECT c FROM CardEntity c WHERE c.id = :id")
     Optional<CardEntity> findByIdWithLock(@Param("id") Long id);

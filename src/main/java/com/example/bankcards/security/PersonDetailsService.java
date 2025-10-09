@@ -1,8 +1,7 @@
-package com.example.bankcards.service;
+package com.example.bankcards.security;
 
 import com.example.bankcards.entity.UserEntity;
 import com.example.bankcards.repository.PeopleRepository;
-import com.example.bankcards.security.PersonDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
