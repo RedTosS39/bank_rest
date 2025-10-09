@@ -28,11 +28,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
 
-        logger.info("=== JWT FILTER START ===");
-        logger.info("Request URI: " + request.getRequestURI());
-        logger.info("Request Method: " + request.getMethod());
-        logger.info("Authorization Header: " + request.getHeader("Authorization"));
-
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
@@ -56,7 +51,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception e) {
-            // Логируем ошибку, но пропускаем запрос дальше
             logger.error("Cannot set user authentication: {}", e);
         }
 
