@@ -23,6 +23,7 @@ public class SecurityConfig {
     private static final String LOGOUT_PAGE = "/logout";
     private static final String ADMIN_PAGE = "/admin";
     private static final String TRANSFER_PAGE = "/transfer";
+    private static final String USER_PAGE = "/user";
 
     private final PersonDetailsService personDetails;
 
@@ -42,7 +43,7 @@ public class SecurityConfig {
                                         "/").permitAll()
                                 .requestMatchers(HttpMethod.POST, REGISTRATION_PAGE).permitAll()
                                 .requestMatchers(ADMIN_PAGE + "/**").hasRole("ADMIN")
-                                .requestMatchers(TRANSFER_PAGE + "/**").hasRole("USER")
+                                .requestMatchers(TRANSFER_PAGE + "/**", USER_PAGE + "/**").hasRole("USER")
                                 .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin
                         .defaultSuccessUrl("/users/info", true)

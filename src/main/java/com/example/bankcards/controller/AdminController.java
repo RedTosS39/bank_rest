@@ -27,10 +27,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/admin")
 public class AdminController {
 
-    ///  - Создает V, блокирует V, активирует V, удаляет карты V
-    ///  - Управляет пользователями ?
-    ///  - Видит все карты V
-
     private final AdminService adminService;
     private final ModelMapper modelMapper;
     private final CardsService cardsService;
@@ -106,6 +102,13 @@ public class AdminController {
     @GetMapping("/{id}/user")
     public ResponseEntity<HttpStatus> showUser(@PathVariable Long id) {
         adminService.findUserById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/assign")
+    public ResponseEntity<HttpStatus> assignCardToUser(@PathVariable("id") Long userId,
+                                                       @RequestParam Long cardId) {
+        adminService.assignCardToUser(userId, cardId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -26,9 +26,16 @@ public class UserController {
                                                     @RequestParam(defaultValue = "0") int page,
                                                     @RequestParam(defaultValue = "5") int size,
                                                     @RequestParam("search") String search) {
-
         Pageable pageable = PageRequest.of(page, size);
         userService.showUserCards(id, pageable, search);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    @GetMapping("/{id}/balance")
+    public ResponseEntity<HttpStatus> showBalance(@PathVariable("id") Long userId,
+                                                  @RequestParam("cardId") Long cardId) {
+        userService.showBalance(userId, cardId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
