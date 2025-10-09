@@ -2,6 +2,7 @@ package com.example.bankcards.service;
 
 import com.example.bankcards.dto.UserDto;
 import com.example.bankcards.entity.CardEntity;
+import com.example.bankcards.entity.Status;
 import com.example.bankcards.entity.UserEntity;
 import com.example.bankcards.exception.CardAlreadyAssignException;
 import com.example.bankcards.exception.CardNotFoundException;
@@ -14,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Slf4j
 @Service
@@ -40,8 +44,11 @@ public class AdminService {
         }
 
         if (cardEntity.getUserEntity() != null) {
-            throw new CardAlreadyAssignException("Card aldready used by someone else");
+            throw new CardAlreadyAssignException("Card already used by someone else");
         }
+        cardEntity.setExpiredDate(LocalDate.now());
+        cardEntity.setStatus(Status.ACTIVE);
+        cardEntity.setBalance(BigDecimal.valueOf(1000.0));
 
         userEntity.getCards().add(cardEntity);
         cardEntity.setUserEntity(userEntity);

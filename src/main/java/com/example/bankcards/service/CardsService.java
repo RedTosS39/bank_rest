@@ -3,9 +3,7 @@ package com.example.bankcards.service;
 import com.example.bankcards.dto.CardDto;
 import com.example.bankcards.entity.CardEntity;
 import com.example.bankcards.entity.Status;
-import com.example.bankcards.exception.CardAlreadyExistException;
 import com.example.bankcards.exception.CardNotFoundException;
-import com.example.bankcards.exception.CardNumberException;
 import com.example.bankcards.repository.CardRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class CardsService {
@@ -27,15 +26,11 @@ public class CardsService {
     }
 
     @Transactional
-    public void createCard(CardDto cardDto) {
-        CardEntity cardEntity = modelMapper.map(cardDto, CardEntity.class);
-        String checkedCardNumber = getCheckedCardNumber(cardDto);
-        cardEntity.setCardNumber(checkedCardNumber);
-
-        if (cardRepository.findByCardNumber(cardEntity.getCardNumber()).isPresent()) {
-            throw new CardAlreadyExistException("Card already exist");
-        }
+    public CardDto createCard() {
+        CardEntity cardEntity = new CardEntity();
+        cardEntity.setCardNumber(generateUniqueCardNumber());
         cardRepository.save(cardEntity);
+        return modelMapper.map(cardEntity, CardDto.class);
     }
 
     @Transactional
@@ -66,16 +61,23 @@ public class CardsService {
         return cardRepository.findById(cardId).orElseThrow(() -> new CardNotFoundException("Couldnt find card with id: " + cardId));
     }
 
-    private String getCheckedCardNumber(CardDto cardDto) {
-        String checkedNumber = cardDto.getCardNumber().replaceAll("\\D", "");
 
-        if (!checkedNumber.matches("\\d{16}")) {
-            throw new CardNumberException("Must be only digits");
-        }
+    private String generateUniqueCardNumber() {
+        String cardNumber;
+        do {
+            cardNumber = generateCardNumber();
+        } while (cardRepository.findByCardNumber(cardNumber).isPresent());
 
-        if (checkedNumber.length() != 16) {
-            throw new CardNumberException("there are not 16 digits");
+        return cardNumber;
+    }
+
+    private String generateCardNumber() {
+        Random random = new Random();
+        StringBuilder cardNumber = new StringBuilder();
+
+        for (int i = 0; i < 16; i++) {
+            cardNumber.append(random.nextInt(10));
         }
-        return checkedNumber;
+        return cardNumber.toString();
     }
 }

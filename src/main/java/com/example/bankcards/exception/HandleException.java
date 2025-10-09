@@ -1,6 +1,5 @@
-package com.example.bankcards.controller;
+package com.example.bankcards.exception;
 
-import com.example.bankcards.exception.*;
 import com.example.bankcards.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +21,11 @@ public class HandleException {
         return ResponseEntity.status(status).body(response);
     }
 
+    @ExceptionHandler(CardExpiredException.class)
+    public ResponseEntity<ErrorResponse> handleCardException(CardExpiredException exception) {
+        return getResponse(exception, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler({CardNotFoundException.class, CardNotFoundException.class})
     public ResponseEntity<ErrorResponse> handleNotFoundException(RuntimeException exception) {
         return getResponse(exception, HttpStatus.NOT_FOUND);
@@ -32,8 +36,8 @@ public class HandleException {
         return getResponse(exception, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler({CardExpiredException.class, CardBalanceException.class})
-    public ResponseEntity<ErrorResponse> handleCardException(CardExpiredException exception) {
+    @ExceptionHandler(CardBalanceException.class)
+    public ResponseEntity<ErrorResponse> handleCardBalanceException(CardBalanceException exception) {
         return getResponse(exception, HttpStatus.BAD_REQUEST);
     }
 

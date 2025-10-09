@@ -29,6 +29,11 @@ public class TransferMoneyService {
         CardEntity cardFrom = getCard(from);
         CardEntity cardTo = getCard(to);
 
+        if (!cardFrom.getStatus().equals(Status.ACTIVE)
+            || !cardTo.getStatus().equals(Status.ACTIVE)) {
+            throw new CardExpiredException("Card is expired or blocked");
+        }
+
         if (cardFrom.getExpiredDate().isBefore(LocalDate.now())) {
             throw new CardExpiredException("Card is expired");
         }
@@ -37,10 +42,6 @@ public class TransferMoneyService {
             throw new CardBalanceException("Not enough balance");
         }
 
-        if (!cardFrom.getStatus().equals(Status.ACTIVE)
-            || !cardTo.getStatus().equals(Status.ACTIVE)) {
-            throw new CardExpiredException("Card is expired or blocked");
-        }
 
         cardFrom.setBalance(cardFrom.getBalance().subtract(amount));
         cardTo.setBalance(cardTo.getBalance().add(amount));
