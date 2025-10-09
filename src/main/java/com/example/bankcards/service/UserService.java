@@ -2,6 +2,8 @@ package com.example.bankcards.service;
 
 import com.example.bankcards.dto.CardDto;
 import com.example.bankcards.entity.CardEntity;
+import com.example.bankcards.entity.UserEntity;
+import com.example.bankcards.exception.CardNotFoundException;
 import com.example.bankcards.exception.UserNotFoundException;
 import com.example.bankcards.repository.CardRepository;
 import com.example.bankcards.repository.PeopleRepository;
@@ -17,8 +19,8 @@ public class UserService {
     /**
      * - Просматривает свои карты V (поиск + пагинация) V
      * - Запрашивает блокировку карты
-     * - Делает переводы между своими картами
-     * - Смотрит баланс
+     * - Делает переводы между своими картами V
+     * - Смотрит баланс V
      */
 
     private final CardRepository cardRepository;
@@ -37,5 +39,14 @@ public class UserService {
         Page<CardEntity> entityPage = cardRepository.findByUserEntityIdAndCardNumberContaining(userId, search, pages);
         Page<CardDto> dtoPage = entityPage.map(card -> modelMapper.map(card, CardDto.class));
         return dtoPage;
+    }
+
+    public CardDto showBalance(Long userId, Long cardId) {
+        UserEntity user = peopleRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
+        CardEntity card = cardRepository.findById(cardId).orElseThrow(() -> new CardNotFoundException("Card not found"));
+
+        if (user.getCards().contains(card)) {
+            return modelMapper.map(card, CardDto.class);
+        } else throw new CardNotFoundException("User doesnt have card with id: " + cardId);
     }
 }

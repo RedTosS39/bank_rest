@@ -1,25 +1,53 @@
 package com.example.bankcards.service;
 
 import com.example.bankcards.dto.UserDto;
+import com.example.bankcards.entity.CardEntity;
 import com.example.bankcards.entity.UserEntity;
+import com.example.bankcards.exception.CardAlreadyAssignException;
+import com.example.bankcards.exception.CardNotFoundException;
+import com.example.bankcards.exception.UserNotFoundException;
+import com.example.bankcards.repository.CardRepository;
 import com.example.bankcards.repository.PeopleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
 public class AdminService {
 
+    private final CardRepository cardRepository;
     private final PeopleRepository peopleRepository;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public AdminService(PeopleRepository peopleRepository, ModelMapper modelMapper) {
+    public AdminService(CardRepository cardRepository, PeopleRepository peopleRepository, ModelMapper modelMapper) {
+        this.cardRepository = cardRepository;
         this.peopleRepository = peopleRepository;
         this.modelMapper = modelMapper;
+    }
+
+    @Transactional
+    public void assignCardToUser(Long userId, Long cardId) {
+        CardEntity cardEntity = cardRepository.findById(cardId).orElseThrow(() -> new CardNotFoundException("card with id: " + cardId + " not found"));
+        UserEntity userEntity = peopleRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        if (userEntity.getCards().contains(cardEntity)) {
+            throw new CardAlreadyAssignException("Card already assigned to user");
+        }
+
+        if (cardEntity.getUserEntity() != null) {
+            throw new CardAlreadyAssignException("Card aldready used by someone else");
+        }
+
+        userEntity.getCards().add(cardEntity);
+        cardEntity.setUserEntity(userEntity);
+
+        log.info("User cards after assign: {}", userEntity.getCards());
+        log.info("username who have this card: {}", cardEntity.getUserEntity().getUsername());
     }
 
 

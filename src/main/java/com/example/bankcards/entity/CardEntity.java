@@ -4,9 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import org.springframework.format.annotation.NumberFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Map;
 
 @Entity
 @Table(name = "bank_card")
@@ -21,7 +23,7 @@ public class CardEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "card_number", nullable = false, length = 16)
+    @Column(name = "card_number", nullable = false, columnDefinition = "CHAR(16)")
     @JdbcTypeCode(SqlTypes.CHAR)
     private String cardNumber;
 
