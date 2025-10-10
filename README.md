@@ -1,5 +1,45 @@
-# Система управления банковскими картами
 
+## Быстрый запуск
+
+1. **Создайте файл `.env`** в корне проекта:
+```properties
+DB_URL=
+DB_USERNAME=
+DB_PASSWORD=
+JWT_SECRET=
+JWT_EXPIRATION=
+```
+
+2. **Запустите сервисы**:
+```bash
+docker-compose up -d
+```
+
+3. **Проверьте статус**:
+```bash
+docker-compose ps
+```
+
+Готово! API доступно на `http://localhost:8080`
+
+## Документация
+
+- Swagger UI: `http://localhost:8080/swagger-ui.html`
+- OpenAPI: `http://localhost:8080/v3/api-docs`
+
+## Полезные команды
+
+```bash
+# Остановить сервисы
+docker-compose down
+
+# Посмотреть логи
+docker-compose logs -f api
+
+# Перезапустить
+docker-compose restart
+```
+----
 # API для управления банковскими картами
 
 ## Общее описание
@@ -154,5 +194,7 @@ http://localhost:8080/v3/api-docs
 - Необходимо создать пользователя
 - Необходимо создать администратора и авторизоваться
 - после авторизации нужно выпустить карту и назначить её конкретному пользователю.
+
+
 ---
 
