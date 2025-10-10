@@ -10,7 +10,6 @@ import java.util.List;
 
 
 public class PersonDetails implements UserDetails {
-
     private final UserEntity user;
 
     public PersonDetails(UserEntity user) {

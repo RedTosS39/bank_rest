@@ -21,7 +21,6 @@ public class JwtService {
     private final String secretKey;
     private final long expirationTime;
 
-    // Инъекция через конструктор
     public JwtService(
             @Value("${jwt.secret}") String secretKey,
             @Value("${jwt.expiration}") long expirationTime) {

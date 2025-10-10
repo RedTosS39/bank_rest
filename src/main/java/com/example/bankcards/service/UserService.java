@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
-
     private final CardRepository cardRepository;
     private final PeopleRepository peopleRepository;
     private final ModelMapper modelMapper;

@@ -13,7 +13,6 @@ import org.springframework.validation.Validator;
 @Slf4j
 @Component
 public class UserValidator implements Validator {
-
     private final AdminService adminService;
 
     @Autowired
