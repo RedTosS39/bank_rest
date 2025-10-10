@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +18,18 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    // Временное решение - захардкодим значения
-    private final String secretKey = Base64.getEncoder().encodeToString(
-            "mySuperSecretKeyForJWTTokenGeneration123!".getBytes()
-    );
+    private final String secretKey;
+    private final long expirationTime;
 
-    private final long expirationTime = 86400000L; // 24 часа
+    // Инъекция через конструктор
+    public JwtService(
+            @Value("${jwt.secret}") String secretKey,
+            @Value("${jwt.expiration}") long expirationTime) {
+
+        // Кодируем секретный ключ в Base64
+        this.secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+        this.expirationTime = expirationTime;
+    }
 
     public String generateToken(String username, String role) {
         Map<String, Object> claims = new HashMap<>();
