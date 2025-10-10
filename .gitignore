@@ -1,7 +1,5 @@
 /.env
 /.env.local
 /src/main/resources/application.local.yml
-/src/main/resources/application.yml
+
 /src/main/resources/test.json
-/docker-compose.yml
-/Dockerfile
