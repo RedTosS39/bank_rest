@@ -34,7 +34,7 @@ class RegistrationServiceTest {
     void RegistrationService_Register_New_User_If_Not_Exist() {
         UserEntity user = createUser();
         UserDto userDto = createUserDto();
-        when(peopleRepository.findByUsername(user.getUsername())).thenReturn(null);
+        when(peopleRepository.findByUsername(user.getUsername())).thenReturn(Optional.empty());
         when(peopleRepository.save(any(UserEntity.class))).thenReturn(user);
         registrationService.registerNewUser(userDto);
         verify(peopleRepository, times(1)).save(any(UserEntity.class));

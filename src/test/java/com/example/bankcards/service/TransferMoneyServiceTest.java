@@ -48,6 +48,10 @@ class TransferMoneyServiceTest {
         when(cardTo.getBalance()).thenReturn(BALANCE_TO);
         when(cardTo.getStatus()).thenReturn(Status.ACTIVE);
 
+        LocalDate futureDate = LocalDate.now().plusYears(1);
+
+        when(cardFrom.getExpiredDate()).thenReturn(futureDate);
+        when(cardTo.getExpiredDate()).thenReturn(futureDate);
         when(cardRepository.findByIdWithLock(CARD_FROM_ID)).thenReturn(Optional.of(cardFrom));
         when(cardRepository.findByIdWithLock(CARD_TO_ID)).thenReturn(Optional.of(cardTo));
 
@@ -66,17 +70,22 @@ class TransferMoneyServiceTest {
         CardEntity cardFrom = mock(CardEntity.class);
         CardEntity cardTo = mock(CardEntity.class);
 
+        LocalDate futureDate = LocalDate.now().plusYears(1);
+
         when(cardFrom.getBalance()).thenReturn(BALANCE_FROM_NOT_ENOUGH);
+        when(cardFrom.getStatus()).thenReturn(Status.ACTIVE);
+        when(cardFrom.getExpiredDate()).thenReturn(futureDate);
+
+        when(cardTo.getStatus()).thenReturn(Status.ACTIVE);
+        when(cardTo.getExpiredDate()).thenReturn(futureDate);
 
         when(cardRepository.findByIdWithLock(CARD_FROM_ID)).thenReturn(Optional.of(cardFrom));
         when(cardRepository.findByIdWithLock(CARD_TO_ID)).thenReturn(Optional.of(cardTo));
 
-        Assertions.assertThrows(CardBalanceException.class,
-                () -> transferMoneyService.transferMoney(CARD_FROM_ID, CARD_TO_ID, AMOUNT));
+        Assertions.assertThrows(CardBalanceException.class, () -> transferMoneyService.transferMoney(CARD_FROM_ID, CARD_TO_ID, AMOUNT));
 
         verify(cardFrom, never()).setBalance(any());
         verify(cardTo, never()).setBalance(any());
-
         verify(cardRepository).findByIdWithLock(CARD_FROM_ID);
         verify(cardRepository).findByIdWithLock(CARD_TO_ID);
     }
@@ -86,14 +95,13 @@ class TransferMoneyServiceTest {
     void TransferMoneyService_Transfer_Card_Is_Not_Active() {
         CardEntity cardFrom = mock(CardEntity.class);
         CardEntity cardTo = mock(CardEntity.class);
-        when(cardFrom.getBalance()).thenReturn(BALANCE_FROM);
+
         when(cardFrom.getStatus()).thenReturn(Status.BLOCKED);
 
         when(cardRepository.findByIdWithLock(CARD_FROM_ID)).thenReturn(Optional.of(cardFrom));
         when(cardRepository.findByIdWithLock(CARD_TO_ID)).thenReturn(Optional.of(cardTo));
 
-        Assertions.assertThrows(CardExpiredException.class,
-                () -> transferMoneyService.transferMoney(CARD_FROM_ID, CARD_TO_ID, AMOUNT));
+        Assertions.assertThrows(CardExpiredException.class, () -> transferMoneyService.transferMoney(CARD_FROM_ID, CARD_TO_ID, AMOUNT));
 
         verify(cardFrom, never()).setBalance(any());
         verify(cardTo, never()).setBalance(any());
@@ -107,17 +115,20 @@ class TransferMoneyServiceTest {
         CardEntity cardFrom = mock(CardEntity.class);
         CardEntity cardTo = mock(CardEntity.class);
 
-        when(cardFrom.getExpiredDate()).thenReturn(LocalDate.of(2025, 9, 12));
+        LocalDate expiredDate = LocalDate.of(2025, 9, 12);
+
+        when(cardFrom.getStatus()).thenReturn(Status.ACTIVE);
+        when(cardFrom.getExpiredDate()).thenReturn(expiredDate);
+
+        when(cardTo.getStatus()).thenReturn(Status.ACTIVE);
 
         when(cardRepository.findByIdWithLock(CARD_FROM_ID)).thenReturn(Optional.of(cardFrom));
         when(cardRepository.findByIdWithLock(CARD_TO_ID)).thenReturn(Optional.of(cardTo));
 
-        Assertions.assertThrows(CardExpiredException.class,
-                () -> transferMoneyService.transferMoney(CARD_FROM_ID, CARD_TO_ID, AMOUNT));
+        Assertions.assertThrows(CardExpiredException.class, () -> transferMoneyService.transferMoney(CARD_FROM_ID, CARD_TO_ID, AMOUNT));
 
         verify(cardFrom, never()).setBalance(any());
         verify(cardTo, never()).setBalance(any());
-
         verify(cardRepository).findByIdWithLock(CARD_FROM_ID);
         verify(cardRepository).findByIdWithLock(CARD_TO_ID);
     }
