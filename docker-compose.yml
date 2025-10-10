@@ -10,7 +10,7 @@
 
 
 services:
-  psql-dima:
+  db:
     image: postgres:17
     restart: always
     volumes:
@@ -28,3 +28,15 @@ services:
       timeout: 60s
       retries: 5
       start_period: 80s
+  api:
+      container_name: bd
+      restart: unless-stopped
+      build:
+        context: .
+      image: bank-card
+      env_file:
+        - .env
+      ports:
+        - "8080:8080"
+      depends_on:
+          - db
