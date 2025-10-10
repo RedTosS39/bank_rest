@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class PersonDetailsService implements UserDetailsService {
-
     private final PeopleRepository peopleRepository;
 
     @Autowired

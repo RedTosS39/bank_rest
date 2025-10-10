@@ -13,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
-
     @Schema(description = "User ID (auto-generated, not required for registration)", example = "null", required = false)
     private Long id;
     private String username;

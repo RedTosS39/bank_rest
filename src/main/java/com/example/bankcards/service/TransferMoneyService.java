@@ -2,7 +2,6 @@ package com.example.bankcards.service;
 
 import com.example.bankcards.entity.CardEntity;
 import com.example.bankcards.entity.Status;
-import com.example.bankcards.exception.CardAlreadyExistException;
 import com.example.bankcards.exception.CardBalanceException;
 import com.example.bankcards.exception.CardExpiredException;
 import com.example.bankcards.exception.CardNotFoundException;

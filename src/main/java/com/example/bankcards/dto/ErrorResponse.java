@@ -6,6 +6,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class ErrorResponse {
+
     private int status;
     private String timestamp;
     private String message;
