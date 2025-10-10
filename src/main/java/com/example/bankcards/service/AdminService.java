@@ -39,14 +39,11 @@ public class AdminService {
         CardEntity cardEntity = cardRepository.findById(cardId).orElseThrow(() -> new CardNotFoundException("card with id: " + cardId + " not found"));
         UserEntity userEntity = peopleRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        if (userEntity.getCards().contains(cardEntity)) {
-            throw new CardAlreadyAssignException("Card already assigned to user");
+        if (userEntity.getCards().contains(cardEntity) || cardEntity.getUserEntity() != null) {
+            throw new CardAlreadyAssignException("Card already assigned");
         }
 
-        if (cardEntity.getUserEntity() != null) {
-            throw new CardAlreadyAssignException("Card already used by someone else");
-        }
-        cardEntity.setExpiredDate(LocalDate.now());
+        cardEntity.setExpiredDate(LocalDate.now().plusYears(5));
         cardEntity.setStatus(Status.ACTIVE);
         cardEntity.setBalance(BigDecimal.valueOf(1000.0));
 
@@ -58,10 +55,11 @@ public class AdminService {
     }
 
 
-    public UserDto loadUserByUsername(String username) throws UsernameNotFoundException {
+
+    public void loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity user = peopleRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
         log.info("User has been found: {}", user.getUsername());
-        return modelMapper.map(user, UserDto.class);
+        modelMapper.map(user, UserDto.class);
     }
 
     public UserDto findUserById(Long id) throws UsernameNotFoundException {

@@ -41,25 +41,6 @@ class CardsServiceTest {
     @Autowired
     private CardsService cardsService;
 
-//    @Test
-//    void CardsService_Create_Card_If_Not_Exist() {
-//        CardEntity cardEntity = cardEntity();
-//        CardDto cardDto = cardDto();
-//        when(cardRepository.findById(CARD_ID)).thenReturn(Optional.empty());
-//        when(cardRepository.save(any(CardEntity.class))).thenReturn(cardEntity);
-//        cardsService.createCard(cardDto);
-//        verify(cardRepository).findByCardNumber(cardDto.getCardNumber());
-//        verify(cardRepository).save(any(CardEntity.class));
-//    }
-//
-//
-//    @Test
-//    void CardsService_Create_Card_If_Exist() {
-//        CardDto cardDto = cardDto();
-//        when(cardRepository.findByCardNumber(CARD_NUMBER)).thenThrow(CardAlreadyExistException.class);
-//        assertThrows(CardAlreadyExistException.class, () -> cardsService.createCard(cardDto));
-//    }
-
     @Test
     void CardsService_Block_Card_If_Exist() {
         CardEntity cardEntity = cardEntity();
@@ -74,7 +55,6 @@ class CardsServiceTest {
         verify(cardRepository).save(cardEntity);
         Assertions.assertEquals(Status.BLOCKED, cardEntity.getStatus());
     }
-
 
     @Test
     void CardService_Delete_Card() {
