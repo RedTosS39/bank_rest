@@ -53,14 +53,12 @@ class AdminServiceTest {
     void AdminService_Try_To_assign_If_Card_Already_Uses() {
         UserEntity user = createUser();
         CardEntity card = createCard();
+        card.setUserEntity(user);
 
         when(cardRepository.findById(CARD_ID)).thenReturn(Optional.of(card));
         when(peopleRepository.findById(USER_ID)).thenReturn(Optional.of(user));
 
-        when(card.getUserEntity()).thenReturn(user);
-
-        adminService.assignCardToUser(USER_ID, CARD_ID);
-
+        assertThrows(CardAlreadyAssignException.class, () -> adminService.assignCardToUser(USER_ID, CARD_ID));
     }
 
     @Test
@@ -103,10 +101,15 @@ class AdminServiceTest {
 
     @Test
     void AdminService_load_User_By_Username_If_Exist() {
-        UserDto expected = modelMapper.map(createUser(), UserDto.class);
+        UserEntity userEntity = createUser();
         UserDto userDto = createUserDto();
-        when(peopleRepository.findById(expected.getId())).thenReturn(null);
-        assertEquals(userDto, expected);
+
+        when(peopleRepository.findByUsername(userEntity.getUsername())).thenReturn(Optional.of(userEntity));
+
+        UserDto result = adminService.loadUserByUsername(userEntity.getUsername());
+        assertEquals(userDto.getUsername(), result.getUsername());
+        verify(peopleRepository).findByUsername(userEntity.getUsername());
+
     }
 
 
@@ -132,8 +135,8 @@ class AdminServiceTest {
     private UserDto createUserDto() {
         return UserDto.builder()
                 .cards(Collections.emptyList())
-                .username("testUser")
-                .password("testPassword")
+                .username(USERNAME)
+                .password(PASSWORD)
                 .role(Role.USER)
                 .build();
     }

@@ -34,7 +34,7 @@ public class TransferMoneyService {
             throw new CardExpiredException("Card is expired or blocked");
         }
 
-        if (cardFrom.getExpiredDate().isBefore(LocalDate.now())) {
+        if (cardFrom.getExpiredDate().isBefore(LocalDate.now()) || cardTo.getExpiredDate().isBefore(LocalDate.now())) {
             throw new CardExpiredException("Card is expired");
         }
 

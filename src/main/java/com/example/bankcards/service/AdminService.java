@@ -54,12 +54,10 @@ public class AdminService {
         log.info("username who have this card: {}", cardEntity.getUserEntity().getUsername());
     }
 
-
-
-    public void loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDto loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity user = peopleRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
         log.info("User has been found: {}", user.getUsername());
-        modelMapper.map(user, UserDto.class);
+        return modelMapper.map(user, UserDto.class);
     }
 
     public UserDto findUserById(Long id) throws UsernameNotFoundException {
